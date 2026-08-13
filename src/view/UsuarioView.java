@@ -6,6 +6,7 @@ import model.UsuarioModel;
 import java.sql.Connection;
 import javax.swing.table.DefaultTableModel;
 import util.Format;
+
 public class UsuarioView extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UsuarioView.class.getName());
@@ -14,9 +15,9 @@ public class UsuarioView extends javax.swing.JFrame {
         initComponents();
         leiaTable();
     }
-    
+
     private Connection connection;
-    
+
     public void limpar() {
         txfNome.setText("");
         txfCpf.setText("");
@@ -24,15 +25,15 @@ public class UsuarioView extends javax.swing.JFrame {
         txfTel.setText("");
         txfNascimento.setText("");
     }
-    
-    public void leiaTable(){
-        
-        DefaultTableModel modelo = (DefaultTableModel)jtUsuario.getModel();
+
+    public void leiaTable() {
+
+        DefaultTableModel modelo = (DefaultTableModel) jtUsuario.getModel();
         modelo.setNumRows(0);
-        
+
         UsuarioDao dao = new UsuarioDao(connection);
-        
-        for(UsuarioModel usuarioM: dao.leitura()){
+
+        for (UsuarioModel usuarioM : dao.leitura()) {
             modelo.addRow(new Object[]{
                 usuarioM.getIdUsuario(),
                 usuarioM.getNome(),
@@ -40,10 +41,10 @@ public class UsuarioView extends javax.swing.JFrame {
                 usuarioM.getEmail(),
                 usuarioM.getTelefone(),
                 usuarioM.getNascimento()
-                
+
             });
         }
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -52,6 +53,8 @@ public class UsuarioView extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txfIdUsuario = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -80,13 +83,26 @@ public class UsuarioView extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Cadastro de Usuário");
 
+        jLabel7.setText("ID:");
+
+        txfIdUsuario.setEditable(false);
+        txfIdUsuario.setAutoscrolls(false);
+        txfIdUsuario.setEnabled(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(177, 177, 177)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(177, 177, 177)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -94,7 +110,11 @@ public class UsuarioView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txfIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -202,6 +222,7 @@ public class UsuarioView extends javax.swing.JFrame {
         jbAtualizar.setText("Atualizar");
 
         jbExcluir.setText("Excluir");
+        jbExcluir.addActionListener(this::jbExcluirActionPerformed);
 
         jbLimpar.setText("Limpar");
         jbLimpar.addActionListener(this::jbLimparActionPerformed);
@@ -267,6 +288,11 @@ public class UsuarioView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jtUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtUsuarioMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jtUsuario);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -289,10 +315,10 @@ public class UsuarioView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -332,24 +358,43 @@ public class UsuarioView extends javax.swing.JFrame {
 
     private void jbCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadastrarActionPerformed
         UsuarioModel u = new UsuarioModel();
-        
+
         try {
             u.setNome(txfNome.getText());
             u.setCpf(txfCpf.getText());
             u.setEmail(txfEmail.getText());
             u.setTelefone(txfTel.getText());
             u.setNascimento(Format.converterParaSqlDate(txfNascimento.getText()));
-            
+
             UsuarioDao dao = new UsuarioDao(connection);
             dao.adicionar(u);
-            
-            JOptionPane.showConfirmDialog(null, "Deu boa");
-            
+
+            JOptionPane.showMessageDialog(null, "Usuário " + txfNome.getText() + " cadastrado com sucesso!");
+
         } catch (Exception e) {
-            JOptionPane.showConfirmDialog(null, "Não deu boa");
+            JOptionPane.showMessageDialog(null, "Não deu boa");
         }
 
+        leiaTable();
+        limpar();
+
     }//GEN-LAST:event_jbCadastrarActionPerformed
+
+    private void jbExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExcluirActionPerformed
+         
+    }//GEN-LAST:event_jbExcluirActionPerformed
+
+    private void jtUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtUsuarioMouseClicked
+        if (jtUsuario.getSelectedRow() != -1) {
+            
+            txfIdUsuario.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 0).toString());
+            txfNome.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 1).toString());
+            txfCpf.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 2).toString());
+            txfEmail.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 3).toString());
+            txfTel.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 4).toString());
+            txfNascimento.setText(Format.dateParaString(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 5).toString()));
+        }
+    }//GEN-LAST:event_jtUsuarioMouseClicked
 
     public static void main(String args[]) {
         try {
@@ -371,6 +416,7 @@ public class UsuarioView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -384,6 +430,7 @@ public class UsuarioView extends javax.swing.JFrame {
     private javax.swing.JTable jtUsuario;
     private javax.swing.JFormattedTextField txfCpf;
     private javax.swing.JTextField txfEmail;
+    private javax.swing.JTextField txfIdUsuario;
     private javax.swing.JFormattedTextField txfNascimento;
     private javax.swing.JTextField txfNome;
     private javax.swing.JFormattedTextField txfTel;

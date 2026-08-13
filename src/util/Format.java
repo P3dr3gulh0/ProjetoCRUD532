@@ -13,6 +13,11 @@ public class Format {
       LocalDate data = LocalDate.parse(dataTexto, formatBrasil);
       //convertento a data para o banco de dados(SQL)
       return Date.valueOf(data);
-  }  
+  }
+    public static String dateParaString(String data) {
+        LocalDate dataConvertida = LocalDate.parse(data); // Converte o texto do banco para uma data
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");// Define o formato brasileiro
+        return dataConvertida.format(formato);    // Retorna a data formatada
+    }  
   
 }

@@ -32,7 +32,7 @@ public class UsuarioDao {
             ps.close();
             
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar!");
+            JOptionPane.showMessageDialog(null, "Erro ao cadastrar! Classe DAO");
             throw new RuntimeException(e);
         }
         
@@ -66,7 +66,7 @@ public class UsuarioDao {
                 usuarioArray.add(u);
                 
             }
-            JOptionPane.showMessageDialog(null, "Lista DAO Funcionou");
+//            JOptionPane.showMessageDialog(null, "Lista DAO Funcionou");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Lista DAO NÂO Funcionou");
             
@@ -76,4 +76,5 @@ public class UsuarioDao {
         return usuarioArray;
         
     }
+    
 }
