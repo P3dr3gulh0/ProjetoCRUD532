@@ -220,6 +220,7 @@ public class UsuarioView extends javax.swing.JFrame {
         jbCadastrar.addActionListener(this::jbCadastrarActionPerformed);
 
         jbAtualizar.setText("Atualizar");
+        jbAtualizar.addActionListener(this::jbAtualizarActionPerformed);
 
         jbExcluir.setText("Excluir");
         jbExcluir.addActionListener(this::jbExcluirActionPerformed);
@@ -381,12 +382,27 @@ public class UsuarioView extends javax.swing.JFrame {
     }//GEN-LAST:event_jbCadastrarActionPerformed
 
     private void jbExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExcluirActionPerformed
-         
+        if (jtUsuario.getSelectedRow() != -1) {
+            UsuarioModel u = new UsuarioModel();
+            u.setIdUsuario((int) jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 0));
+
+            UsuarioDao dao = new UsuarioDao(connection);
+            dao.deletar(u);
+
+            JOptionPane.showMessageDialog(null, "Usuario deletado com sucesso");
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecione um Usuario para excluir");
+
+        }
+        limpar();
+        leiaTable();
+
     }//GEN-LAST:event_jbExcluirActionPerformed
 
     private void jtUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtUsuarioMouseClicked
         if (jtUsuario.getSelectedRow() != -1) {
-            
+
             txfIdUsuario.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 0).toString());
             txfNome.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 1).toString());
             txfCpf.setText(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 2).toString());
@@ -395,6 +411,28 @@ public class UsuarioView extends javax.swing.JFrame {
             txfNascimento.setText(Format.dateParaString(jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 5).toString()));
         }
     }//GEN-LAST:event_jtUsuarioMouseClicked
+
+    private void jbAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarActionPerformed
+        if (jtUsuario.getSelectedRow() != -1) {
+            UsuarioModel u = new UsuarioModel();
+
+            u.setNome(txfNome.getText());
+            u.setCpf(txfCpf.getText());
+            u.setEmail(txfEmail.getText());
+            u.setTelefone(txfTel.getText());
+            u.setNascimento(Format.converterParaSqlDate(txfNascimento.getText()));
+
+            u.setIdUsuario((int) jtUsuario.getValueAt(jtUsuario.getSelectedRow(), 0));
+            
+            UsuarioDao dao = new UsuarioDao(connection);
+            dao.editar(u);
+
+            JOptionPane.showMessageDialog(null, "Usuario edtitado com sucesso!");
+
+            limpar();
+            leiaTable();
+        }
+    }//GEN-LAST:event_jbAtualizarActionPerformed
 
     public static void main(String args[]) {
         try {
